@@ -13,7 +13,7 @@
 
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="319" Margin="10,90,0,0" VerticalAlignment="Top" Width="772">
             <ScrollViewer>
-                <TextBlock x:Name="ConsoleData" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="400" Width="772" Background="#FFCDCDCD"/>
+                <TextBlock x:Name="ConsoleData" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="317" Width="772" Background="#FFCDCDCD"/>
             </ScrollViewer>
         </Border>
         <Label Content="Console" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top"/>
