@@ -25,8 +25,8 @@ namespace VLHCS_Launcher
     /// </summary>
     public partial class MainWindow : Window
     {
-        //string path = Directory.GetCurrentDirectory() + "\\hlds.exe";
-        string path = "G:\\GAMES\\SteamLibrary\\steamapps\\common\\Half-Life\\hlds.exe";
+        string path = Directory.GetCurrentDirectory() + "\\hlds.exe";
+        //string path = "G:\\GAMES\\SteamLibrary\\steamapps\\common\\Half-Life\\hlds.exe";
         string args = "-console -game cstrike +maxplayers 8 +map de_dust";
         string processName = "hlds";
 
@@ -57,7 +57,7 @@ namespace VLHCS_Launcher
         {
             CreateHLDS(path, args);
 
-            var timer = new System.Timers.Timer(300);
+            var timer = new Timer(5);
             timer.Elapsed += Timer_Elapsed;
             timer.Start();
         }
@@ -74,18 +74,25 @@ namespace VLHCS_Launcher
 
         private void CreateHLDS(string path, string args)
         {
-            using var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
+            try {
+                using var process = new Process
                 {
-                    FileName = path,
-                    Arguments = args,
-                    UseShellExecute = false,
-                }
-            };
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = path,
+                        Arguments = args,
+                        UseShellExecute = false,
+                        WorkingDirectory = System.IO.Path.GetDirectoryName(path),
+                    }
+                };
 
-            process.Start();
-            process.WaitForInputIdle();
+                process.Start();
+                process.WaitForInputIdle();
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show($"{err.Message} File: `{path}`", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void ProcessClose(string name)
