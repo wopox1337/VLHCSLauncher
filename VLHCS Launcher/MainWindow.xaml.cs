@@ -16,7 +16,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Runtime.InteropServices;
-using System.Threading;
+using System.Timers;
 
 namespace VLHCS_Launcher
 {
@@ -25,36 +25,56 @@ namespace VLHCS_Launcher
     /// </summary>
     public partial class MainWindow : Window
     {
-        SynchronizationContext _syncContext;
+        string path = Directory.GetCurrentDirectory() + "\\hlds.exe";
+        //string path = "G:\\GAMES\\SteamLibrary\\steamapps\\common\\Half-Life\\hlds.exe";
+        string args = "-console -game cstrike +maxplayers 8 +map de_dust";
+        string processName = "hlds";
 
         public MainWindow()
         {
             InitializeComponent();
-            _syncContext = SynchronizationContext.Current;
 
+            if(!File.Exists(path))
+            {
+                MessageBox.Show($"Не найден HLDS.exe!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
 
+                Environment.Exit(0);
+                return;
+            }
         }
 
-        void Display(string output)
+        private void Button_Click_Exit(object sender, RoutedEventArgs e)
         {
-            _syncContext.Post(_ => ConsoleData.Text += $"{output}\n", null);
+            ProcessClose(processName);
+            Environment.Exit(0);
+        }
+        private void Button_Click_Minimize(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_StartServer(object sender, RoutedEventArgs e)
         {
-            string path = Directory.GetCurrentDirectory() + "\\hlds.exe";
-            string args = "-console -game cstrike +maxplayers 8 +map de_dust";
-
             CreateHLDS(path, args);
-            ConsoleData.Text = "";
 
-            var proc_HLDS = Find_Proc("HLDS");
+            var timer = new Timer(5);
+            timer.Elapsed += Timer_Elapsed;
+            timer.Start();
+        }
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
+
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            ProcessHide(processName);
         }
 
         private void CreateHLDS(string path, string args)
         {
-            try
-            {
+            try {
                 using var process = new Process
                 {
                     StartInfo = new ProcessStartInfo
@@ -62,32 +82,53 @@ namespace VLHCS_Launcher
                         FileName = path,
                         Arguments = args,
                         UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        WindowStyle = ProcessWindowStyle.Hidden,
+                        WorkingDirectory = System.IO.Path.GetDirectoryName(path),
                     }
                 };
 
-                process.OutputDataReceived += (sender, args) => Display(args.Data);
-                process.ErrorDataReceived += (sender, args) => Display(args.Data);
-
                 process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
+                process.WaitForInputIdle();
             }
             catch (Exception err)
             {
-                ConsoleData.Text = $"{err.Message} File: `{path}`";
+                MessageBox.Show($"{err.Message} File: `{path}`", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private Process Find_Proc(string name)
+        private void ProcessClose(string name)
         {
-            var procList = Process.GetProcessesByName(name);
-            return procList[0];
+            Process[] processRunning = Process.GetProcesses();
+            foreach (Process pr in processRunning)
+            {
+                if (pr.ProcessName == name)
+                {
+                    pr.CloseMainWindow();
+                    pr.Close();
+                }
+            }
         }
 
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+        private const int SW_HIDE = 0;
+        [DllImport("User32")]
+        private static extern int ShowWindow(int hwnd, int nCmdShow);
+
+        private void ProcessHide(string name)
+        {
+            Process[] processRunning = Process.GetProcesses();
+            foreach (Process pr in processRunning)
+            {
+                if(pr.ProcessName == name)
+                {
+                    var hWnd = pr.MainWindowHandle.ToInt32();
+                    ShowWindow(hWnd, SW_HIDE);
+                }
+            }
+        }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+                this.DragMove();
+        }
     }
 }

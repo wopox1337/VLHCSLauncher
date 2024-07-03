@@ -5,19 +5,42 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VLHCS_Launcher"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        MouseDown="Window_MouseDown"
+        Title="VLHCS Launcher" Height="415.667" Width="381.667" WindowStyle="None" ResizeMode="NoResize">
     <Grid>
-        <Button Content="START SERVER" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="109" Height="43" Click="Button_Click" RenderTransformOrigin="-0.513,0.363"/>
+        <Image HorizontalAlignment="Left" Height="428" VerticalAlignment="Top" Width="428" Source="VATB-launcher.png" Margin="-6,-6,-40,-6"/>
+        <Button Content="" Click="Button_Click_StartServer" HorizontalAlignment="Left" Margin="44,310,0,0" VerticalAlignment="Top" Width="294" Height="62" ToolTip="Запустить сервер" Cursor="Hand" BorderBrush="{x:Null}" Opacity="0.205" >
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF00C62B" Offset="0"/>
+                    <GradientStop Color="#FF004F00" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <Button Content=" " HorizontalAlignment="Left" Margin="358,1,0,0" VerticalAlignment="Top" Width="22" Height="23" Click="Button_Click_Exit" RenderTransformOrigin="-0.513,0.363" Cursor="Hand" BorderBrush="{x:Null}" Opacity="0.325">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="1"/>
+                    <GradientStop Color="#FF740000"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="56,390,271,0" Cursor="Hand" FontWeight="Bold" FontSize="10" Width="55" FontFamily="Sitka Small">
+            <Hyperlink NavigateUri="http://VLHCS.RU/" RequestNavigate="Hyperlink_RequestNavigate" Foreground="#FF303030">
+                VLHCS.RU
+            </Hyperlink>
+        </TextBlock>
+        <Button Content=" " HorizontalAlignment="Left" Margin="336,1,0,0" VerticalAlignment="Top" Width="22" Height="23" Click="Button_Click_Minimize" RenderTransformOrigin="-0.513,0.363" Cursor="Hand" BorderBrush="{x:Null}" Opacity="0.325">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="1"/>
+                    <GradientStop Color="#FF740000"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
 
 
-
-        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="319" Margin="10,90,0,0" VerticalAlignment="Top" Width="772">
-            <ScrollViewer>
-                <TextBlock x:Name="ConsoleData" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="317" Width="772" Background="#FFCDCDCD"/>
-            </ScrollViewer>
-        </Border>
-        <Label Content="Console" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top"/>
-        
 
 
 
